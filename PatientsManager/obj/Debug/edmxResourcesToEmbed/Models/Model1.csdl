@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HospitalDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Medicine">
+    <Key>
+      <PropertyRef Name="MedicineID" />
+    </Key>
+    <Property Name="MedicineID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TreatmentID" Type="Int32" Nullable="false" />
+    <Property Name="PatientID" Type="Int32" Nullable="false" />
+    <Property Name="MedicineName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="MedicineType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="DosageDays" Type="Int32" />
+    <Property Name="TimesPerDay" Type="Int32" />
+    <NavigationProperty Name="Patient" Relationship="Self.FK_Medicine_Patient" FromRole="Medicine" ToRole="Patient" />
+    <NavigationProperty Name="Treatment" Relationship="Self.FK_Medicine_Treatment" FromRole="Medicine" ToRole="Treatment" />
+  </EntityType>
+  <EntityType Name="Patient">
+    <Key>
+      <PropertyRef Name="PatientID" />
+    </Key>
+    <Property Name="PatientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="LastName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
+    <Property Name="MaritalStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="EmailAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="PhysicalAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Medicines" Relationship="Self.FK_Medicine_Patient" FromRole="Patient" ToRole="Medicine" />
+    <NavigationProperty Name="Treatments" Relationship="Self.FK_Treatment_Patient" FromRole="Patient" ToRole="Treatment" />
+  </EntityType>
+  <EntityType Name="Treatment">
+    <Key>
+      <PropertyRef Name="TreatmentID" />
+    </Key>
+    <Property Name="TreatmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatientID" Type="Int32" Nullable="false" />
+    <Property Name="Symptoms" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Diagnosis" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="TreatmentDate" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="Medicines" Relationship="Self.FK_Medicine_Treatment" FromRole="Treatment" ToRole="Medicine" />
+    <NavigationProperty Name="Patient" Relationship="Self.FK_Treatment_Patient" FromRole="Treatment" ToRole="Patient" />
+  </EntityType>
+  <Association Name="FK_Medicine_Patient">
+    <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+    <End Role="Medicine" Type="Self.Medicine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patient">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="Medicine">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Medicine_Treatment">
+    <End Role="Treatment" Type="Self.Treatment" Multiplicity="1" />
+    <End Role="Medicine" Type="Self.Medicine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Treatment">
+        <PropertyRef Name="TreatmentID" />
+      </Principal>
+      <Dependent Role="Medicine">
+        <PropertyRef Name="TreatmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Treatment_Patient">
+    <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+    <End Role="Treatment" Type="Self.Treatment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patient">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="Treatment">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HospitalDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Medicines" EntityType="Self.Medicine" />
+    <EntitySet Name="Patients" EntityType="Self.Patient" />
+    <EntitySet Name="Treatments" EntityType="Self.Treatment" />
+    <AssociationSet Name="FK_Medicine_Patient" Association="Self.FK_Medicine_Patient">
+      <End Role="Patient" EntitySet="Patients" />
+      <End Role="Medicine" EntitySet="Medicines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Medicine_Treatment" Association="Self.FK_Medicine_Treatment">
+      <End Role="Treatment" EntitySet="Treatments" />
+      <End Role="Medicine" EntitySet="Medicines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Treatment_Patient" Association="Self.FK_Treatment_Patient">
+      <End Role="Patient" EntitySet="Patients" />
+      <End Role="Treatment" EntitySet="Treatments" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

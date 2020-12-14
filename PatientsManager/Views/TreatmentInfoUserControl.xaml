@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="PatientsManager.Views.TreatmentInfoUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PatientsManager.Views"
+             xmlns:converters="clr-namespace:PatientsManager.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <converters:LongDateToShortConverter x:Key="longDateToShortConverter"/>
+
+        <Style TargetType="{x:Type TextBlock}">
+
+            <Setter Property="FontSize"
+                    Value="20"/>
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
+            <Setter Property="Margin"
+                    Value="40 0 40 0"/>
+        </Style>
+        
+        <Style TargetType="{x:Type TextBox}"
+               BasedOn="{StaticResource {x:Type TextBox}}">
+
+            <Setter Property="FontSize"
+                    Value="14"/>
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
+            <Setter Property="Margin"
+                    Value="40 0 40 0"/>
+            <Setter Property="AcceptsReturn"
+                    Value="True"/>
+            <Setter Property="IsReadOnly"
+                    Value="True"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Treatment ID"
+                   Grid.Row="0"
+                   Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedTreatment.TreatmentID}"
+                   Grid.Row="0"
+                   Grid.Column="1"/>
+
+        <TextBlock Text="Date of Treatment"
+                   Grid.Row="1"
+                   Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedTreatment.TreatmentDate, Converter={StaticResource longDateToShortConverter}}"
+                   Grid.Row="1"
+                   Grid.Column="1"/>
+
+        <TextBlock Text="Symptoms"
+                   Grid.Row="2"
+                   Grid.Column="0"/>
+        <TextBox    Text="{Binding Path=SelectedTreatment.Symptoms}"
+                    Grid.Row="2"
+                    Grid.Column="1"/>
+
+        <TextBlock Text="Diagnosis"
+                   Grid.Row="3"
+                   Grid.Column="0"/>
+        <TextBox Text="{Binding Path=SelectedTreatment.Diagnosis}"
+                   Grid.Row="3"
+                   Grid.Column="1"/>
+    </Grid>
+</UserControl>

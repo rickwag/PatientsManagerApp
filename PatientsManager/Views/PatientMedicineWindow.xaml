@@ -1,0 +1,46 @@
+﻿<Window x:Class="PatientsManager.Views.PatientMedicineWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PatientsManager.Views"
+        mc:Ignorable="d"
+        Title="PatientMedicineWindow" Height="550" Width="900"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Grid>
+        <DockPanel LastChildFill="True">
+
+            <TextBlock Text="{Binding Path=SelectedMedicine.MedicineName}"
+                    FontSize="30"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Top"
+                    Margin="10"/>
+
+            <Border Margin="10">
+                <Grid MinHeight="410">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height=".15*"/>
+                    </Grid.RowDefinitions>
+                    <local:MedicineInfoUserControl/>
+                    <Grid Grid.Row="1">
+                        <Button Content="Edit Medicine"
+                                            HorizontalAlignment="Left"
+                                            Margin="40 0 0 0"
+                                            Command="{Binding Path=ShowEditMedicineWindowCommand}"
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+                        <Button Content="Delete Medicine"
+                                            HorizontalAlignment="Right"
+                                            Margin="0 0 40 0"
+                                            Command="{Binding Path=DeleteSelectedMedicineCommand}"
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DockPanel>
+    </Grid>
+</Window>

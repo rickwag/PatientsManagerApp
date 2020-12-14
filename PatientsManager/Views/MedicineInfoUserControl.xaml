@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="PatientsManager.Views.MedicineInfoUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PatientsManager.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBlock}">
+
+            <Setter Property="FontSize"
+                    Value="20"/>
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
+            <Setter Property="Margin"
+                    Value="40 0 40 0"/>
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}"
+               BasedOn="{StaticResource {x:Type TextBox}}">
+
+            <Setter Property="FontSize"
+                    Value="14"/>
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
+            <Setter Property="Margin"
+                    Value="40 0 40 0"/>
+            <Setter Property="AcceptsReturn"
+                    Value="True"/>
+            <Setter Property="IsReadOnly"
+                    Value="True"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Medicine ID"
+                   Grid.Row="0"
+                   Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedMedicine.MedicineID}"
+                   Grid.Row="0"
+                   Grid.Column="1"/>
+
+        <TextBlock Text="Medicine Type"
+                   Grid.Row="1"
+                   Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedMedicine.MedicineType}"
+                   Grid.Row="1"
+                   Grid.Column="1"/>
+
+        <TextBlock Text="Medicine Name"
+                   Grid.Row="2"
+                   Grid.Column="0"/>
+        <TextBlock  Text="{Binding Path=SelectedMedicine.MedicineName}"
+                    Grid.Row="2"
+                    Grid.Column="1"/>
+
+        <TextBlock Text="Dosage Days"
+                   Grid.Row="3"
+                   Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedMedicine.DosageDays}"
+                   Grid.Row="3"
+                   Grid.Column="1"/>
+        
+        <TextBlock Text="Dosage Times per Day"
+                   Grid.Row="4"
+                   Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedMedicine.TimesPerDay}"
+                   Grid.Row="4"
+                   Grid.Column="1"/>
+    </Grid>
+</UserControl>
