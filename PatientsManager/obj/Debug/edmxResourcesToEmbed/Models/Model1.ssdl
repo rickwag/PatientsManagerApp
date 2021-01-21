@@ -20,10 +20,10 @@
     <Property Name="FirstName" Type="varchar" MaxLength="20" />
     <Property Name="LastName" Type="varchar" MaxLength="20" />
     <Property Name="DateOfBirth" Type="date" />
-    <Property Name="MaritalStatus" Type="varchar" MaxLength="20" />
-    <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" />
-    <Property Name="EmailAddress" Type="nvarchar" MaxLength="20" />
-    <Property Name="PhysicalAddress" Type="nvarchar" MaxLength="50" />
+    <Property Name="MaritalStatus" Type="varchar" MaxLength="10" />
+    <Property Name="PhoneNumber" Type="nchar" MaxLength="20" />
+    <Property Name="EmailAddress" Type="nchar" MaxLength="30" />
+    <Property Name="PhysicalAddress" Type="nchar" MaxLength="30" />
   </EntityType>
   <EntityType Name="Treatment">
     <Key>
@@ -31,9 +31,9 @@
     </Key>
     <Property Name="TreatmentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="PatientID" Type="int" Nullable="false" />
-    <Property Name="Symptoms" Type="varchar" MaxLength="100" />
-    <Property Name="Diagnosis" Type="varchar" MaxLength="100" />
     <Property Name="TreatmentDate" Type="date" />
+    <Property Name="Symptoms" Type="varchar" MaxLength="50" />
+    <Property Name="Diagnosis" Type="varchar" MaxLength="50" />
   </EntityType>
   <Association Name="FK_Medicine_Patient">
     <End Role="Patient" Type="Self.Patient" Multiplicity="1" />

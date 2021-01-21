@@ -82,6 +82,7 @@
     <Compile Include="Commands\RelayCommandParamAwait.cs" />
     <Compile Include="Converters\DateOfBirthToAgeConverter.cs" />
     <Compile Include="Converters\LongDateToShortConverter.cs" />
+    <Compile Include="Converters\PatientToIDConverter.cs" />
     <Compile Include="Models\Medicine.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
