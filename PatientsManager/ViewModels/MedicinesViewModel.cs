@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PatientsManager.ViewModels
 {
@@ -15,6 +16,14 @@ namespace PatientsManager.ViewModels
 
         #region properties
         public Medicine NewMedicine { get; set; } = new Medicine();
+        public List<Patient> ExistingPatients
+        {
+            get { return GetPatients(); }
+        }
+        public List<Treatment> SelectedPatientTreatments
+        {
+            get { return GetTreatments(); }
+        }
 
         public RelayCommandParamAwait SaveMedicineCommand
         {
@@ -123,6 +132,22 @@ namespace PatientsManager.ViewModels
                 {
                     MessageBox.Show(e.Message, "error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+        }
+        
+        public List<Patient> GetPatients()
+        {
+            using (var context = new HospitalDBEntities())
+            {
+                return context.Patients.ToList();
+            }
+        }
+        public List<Treatment> GetTreatments()
+        {
+            using (var context = new HospitalDBEntities())
+            {
+                Patient selectedPatient = context.Patients.Select(patient => patient.PatientID == NewMedicine.PatientID) as Patient;
+                return selectedPatient.Treatments.ToList();
             }
         }
         #endregion
