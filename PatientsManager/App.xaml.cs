@@ -11,10 +11,10 @@ namespace PatientsManager
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //using (var context = new HospitalDBEntities())
-            //{
-            //    var patients = context.Patients;
-            //}
+            using (var context = new HospitalDBEntities())
+            {
+                var patients = context.Patients;
+            }
         }
     }
 }

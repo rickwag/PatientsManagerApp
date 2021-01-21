@@ -19,6 +19,7 @@
     
     <Window.Resources>
         <converters:PatientToIDConverter x:Key="patientToIDConverter"/>
+        <converters:TreatmentToIDConverter x:Key="treatmentToIDConverter"/>
 
         <Style TargetType="{x:Type Label}">
 
@@ -97,7 +98,8 @@
                   Grid.Column="1"
                   ItemsSource="{Binding Path=ExistingPatients, Mode=OneWay}"
                   SelectedItem="{Binding Path=NewMedicine.PatientID, Mode=OneWayToSource, Converter={StaticResource patientToIDConverter}}"
-                  Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedValue}">
+                  Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedValue}"
+                  SelectionChanged="ComboBox_SelectionChanged">
 
             <ComboBox.Style>
                 <Style BasedOn="{StaticResource {x:Type ComboBox}}"
@@ -127,9 +129,34 @@
         
         <Label Content="Treatment ID"
                Grid.Row="2"/>
-        <TextBox Grid.Row="2"
-                 Grid.Column="1"
-                 Text="{Binding Path=NewMedicine.TreatmentID, Mode=OneWayToSource}"/>
+        <ComboBox Grid.Row="2"
+                  Grid.Column="1"
+                  ItemsSource="{Binding Path=SelectedPatientTreatments, Mode=OneWay}"
+                  SelectedItem="{Binding Path=NewMedicine.TreatmentID, Mode=OneWayToSource, Converter={StaticResource treatmentToIDConverter}}"
+                  Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedValue}">
+
+            <ComboBox.Style>
+                <Style BasedOn="{StaticResource {x:Type ComboBox}}"
+                       TargetType="{x:Type ComboBox}">
+                    <Setter Property="FontSize"
+                            Value="14"/>
+                    <Setter Property="Margin"
+                            Value="0 0 40 0"/>
+                    <Setter Property="IsEditable"
+                            Value="False"/>
+                </Style>
+            </ComboBox.Style>
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel LastChildFill="False">
+                        <TextBlock DockPanel.Dock="Left"
+                                   Text="{Binding Path=TreatmentID}"/>
+                        <TextBlock DockPanel.Dock="Right"
+                                   Text="{Binding Diagnosis}"/>
+                    </DockPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
         
         <Label Content="Type"
                Grid.Row="3"/>

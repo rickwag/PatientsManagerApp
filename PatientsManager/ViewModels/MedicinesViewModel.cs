@@ -12,6 +12,9 @@ namespace PatientsManager.ViewModels
     {
         #region fields
         private RelayCommandParamAwait saveMedicineCommand;
+        private RelayCommand updateSelectedPatientTreatmentsCommand;
+
+        private List<Treatment> selectedPatientTreatments;
         #endregion
 
         #region properties
@@ -22,13 +25,25 @@ namespace PatientsManager.ViewModels
         }
         public List<Treatment> SelectedPatientTreatments
         {
-            get { return GetTreatments(); }
+            get { return selectedPatientTreatments; }
+            set 
+            { 
+                selectedPatientTreatments = value;
+                OnPropertyChanged("SelectedPatientTreatments");
+            }
         }
 
         public RelayCommandParamAwait SaveMedicineCommand
         {
             get { return saveMedicineCommand; }
         }
+
+        public RelayCommand UpdateSelectedPatientTreatmentsCommand
+        {
+            get { return updateSelectedPatientTreatmentsCommand; }
+            set { updateSelectedPatientTreatmentsCommand = value; }
+        }
+
         #endregion
 
         #region methods
@@ -42,6 +57,7 @@ namespace PatientsManager.ViewModels
             base.InitialiseCommands();
 
             saveMedicineCommand = new RelayCommandParamAwait(SaveMedicineAsync);
+            updateSelectedPatientTreatmentsCommand = new RelayCommand(UpdateSelectedPatientTreatments);
         }
 
         private async Task SaveMedicineAsync(object windowObject)
@@ -146,9 +162,18 @@ namespace PatientsManager.ViewModels
         {
             using (var context = new HospitalDBEntities())
             {
-                Patient selectedPatient = context.Patients.Select(patient => patient.PatientID == NewMedicine.PatientID) as Patient;
-                return selectedPatient.Treatments.ToList();
+                Patient selectedPatient = context.Patients.FirstOrDefault(patient => patient.PatientID == NewMedicine.PatientID);
+
+                if (selectedPatient != null)
+                    return selectedPatient.Treatments.ToList();
+                else
+                    return new List<Treatment>();
             }
+        }
+
+        public void UpdateSelectedPatientTreatments()
+        {
+            SelectedPatientTreatments = GetTreatments();
         }
         #endregion
     }
