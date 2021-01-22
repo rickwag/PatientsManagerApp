@@ -20,12 +20,14 @@ namespace PatientsManager.ViewModels
         private ObservableCollection<Treatment> selectedPatientTreatments = new ObservableCollection<Treatment>();
         private ObservableCollection<Medicine> selectedPatientMedicines = new ObservableCollection<Medicine>();
         private UserControl currentTreatmentInfoControl;
-        private List<Medicine> selectedTreatmentMedicines = new List<Medicine>();
+	    private ObservableCollection<Medicine> selectedTreatmentMedicines = new ObservableCollection<Medicine>();
+	    private bool inPatientDetails = true;	
 
         private RelayCommandParamAwait saveNewPatientCommand;
         private RelayCommandAwait showPatientDetailCommand;
         private RelayCommandAwait showPatientTreatmentDetailCommand;
         private RelayCommandAwait showPatientMedicineDetailCommand;
+	private RelayCommandAwait showTreatmentMedicineDetailCommand;
         private RelayCommandParamAwait showEditPatientWindowCommand;
         private RelayCommandParamAwait deleteSelectedPatientCommand;
         private RelayCommandParamAwait deleteSelectedTreatmentCommand;
@@ -86,7 +88,7 @@ namespace PatientsManager.ViewModels
         {
             get { return SelectedPatientTreatments[SelectedTreatmentIndex]; }
         }
-        public List<Medicine> SelectedTreatmentMedicines
+        public ObservableCollection<Medicine> SelectedTreatmentMedicines
         {
             get { return selectedTreatmentMedicines; }
             set
@@ -103,7 +105,10 @@ namespace PatientsManager.ViewModels
         }
         public Medicine SelectedMedicine
         {
-            get { return SelectedPatientMedicines[SelectedMedicineIndex]; }
+            get
+            {
+                return inPatientDetails == true ? SelectedPatientMedicines[SelectedMedicineIndex] : SelectedTreatmentMedicines[SelectedMedicineIndex];
+            }
         }
 
         public UserControl CurrentTreatmentInfoControl
@@ -129,6 +134,10 @@ namespace PatientsManager.ViewModels
         public RelayCommandAwait ShowPatientMedicineDetailCommand
         {
             get { return showPatientMedicineDetailCommand; }
+        }
+	    public RelayCommandAwait ShowTreatmentMedicineDetailCommand
+        {
+            get { return showTreatmentMedicineDetailCommand; }
         }
         public RelayCommandAwait ShowPatientTreatmentDetailCommand
         {
@@ -173,6 +182,7 @@ namespace PatientsManager.ViewModels
             showPatientDetailCommand = new RelayCommandAwait(ShowPatientDetailAsync);
             showPatientTreatmentDetailCommand = new RelayCommandAwait(ShowPatientTreatmentDetailAsync);
             showPatientMedicineDetailCommand = new RelayCommandAwait(ShowPatientMedicineDetailAsync);
+	    showTreatmentMedicineDetailCommand = new RelayCommandAwait(ShowTreatmentMedicineDetailAsync);					
             showEditPatientWindowCommand = new RelayCommandParamAwait(ShowEditPatientAsync);
             deleteSelectedPatientCommand = new RelayCommandParamAwait(DeletePatientAsync);
             showEditTreatmentWindowCommand = new RelayCommandParamAwait(ShowEditTreatmentAsync);
@@ -420,7 +430,8 @@ namespace PatientsManager.ViewModels
             patientTreatmentWindow.ShowDialog();
         }
         public async Task ShowPatientMedicineDetailAsync()
-        {
+        {	
+	    inPatientDetails = true;
             var patientMedicineWindow = new PatientMedicineWindow();
             patientMedicineWindow.DataContext = this;
 
@@ -534,6 +545,16 @@ namespace PatientsManager.ViewModels
 
             InitialiseSelectedPatientMedicines();
             InitialiseSelectedTreatmentMedicines();
+        }
+	public async Task ShowTreatmentMedicineDetailAsync()
+        {
+            inPatientDetails = false;
+            var patientMedicineWindow = new PatientMedicineWindow();
+            patientMedicineWindow.DataContext = this;
+
+            await Task.Delay(TimeSpan.FromSeconds(.5));
+
+            patientMedicineWindow.ShowDialog();
         }
         #endregion
     }

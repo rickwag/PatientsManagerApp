@@ -14,10 +14,5 @@ namespace PatientsManager.Views
         {
             InitializeComponent();
         }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            (this.DataContext as MedicinesViewModel).UpdateSelectedPatientTreatmentsCommand.Execute(null);
-        }
     }
 }

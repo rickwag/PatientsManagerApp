@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:PatientsManager.Views"
         xmlns:viewModels="clr-namespace:PatientsManager.ViewModels"
         xmlns:converters="clr-namespace:PatientsManager.Converters"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
         mc:Ignorable="d"
         Title="NewMedicineWindow" Height="550" Width="900"
         WindowStartupLocation="CenterScreen"
@@ -98,8 +99,13 @@
                   Grid.Column="1"
                   ItemsSource="{Binding Path=ExistingPatients, Mode=OneWay}"
                   SelectedItem="{Binding Path=NewMedicine.PatientID, Mode=OneWayToSource, Converter={StaticResource patientToIDConverter}}"
-                  Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedValue}"
-                  SelectionChanged="ComboBox_SelectionChanged">
+                  Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedValue}">
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding Path=UpdateSelectedPatientTreatmentsCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
 
             <ComboBox.Style>
                 <Style BasedOn="{StaticResource {x:Type ComboBox}}"

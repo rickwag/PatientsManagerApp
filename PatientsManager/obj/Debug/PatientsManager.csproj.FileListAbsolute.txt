@@ -130,3 +130,7 @@ C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\obj\Debug\Patien
 C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\obj\Debug\PatientsManager.csproj.CopyComplete
 C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\obj\Debug\PatientsManager.exe
 C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\obj\Debug\PatientsManager.pdb
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Microsoft.Expression.Interactions.xml
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\System.Windows.Interactivity.xml
