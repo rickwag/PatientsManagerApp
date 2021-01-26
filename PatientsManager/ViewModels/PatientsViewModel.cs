@@ -5,9 +5,11 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
+using System.IO;
 using PatientsManager.Models;
 using PatientsManager.Commands;
 using PatientsManager.Views;
+using Microsoft.Win32;
 
 namespace PatientsManager.ViewModels
 {
@@ -27,13 +29,14 @@ namespace PatientsManager.ViewModels
         private RelayCommandAwait showPatientDetailCommand;
         private RelayCommandAwait showPatientTreatmentDetailCommand;
         private RelayCommandAwait showPatientMedicineDetailCommand;
-	private RelayCommandAwait showTreatmentMedicineDetailCommand;
+	    private RelayCommandAwait showTreatmentMedicineDetailCommand;
         private RelayCommandParamAwait showEditPatientWindowCommand;
         private RelayCommandParamAwait deleteSelectedPatientCommand;
         private RelayCommandParamAwait deleteSelectedTreatmentCommand;
         private RelayCommandParamAwait deleteSelectedMedicineCommand;
         private RelayCommandParamAwait showEditTreatmentWindowCommand;
         private RelayCommandParamAwait showEditMedicineWindowCommand;
+        private RelayCommand importPatientsCommand;
         #endregion
 
         #region properties
@@ -167,6 +170,11 @@ namespace PatientsManager.ViewModels
         {
             get { return showEditMedicineWindowCommand; }
         }
+        public RelayCommand ImportPatientsCommand
+        {
+            get { return importPatientsCommand; }
+        }
+
         #endregion
 
         #region methods
@@ -182,13 +190,14 @@ namespace PatientsManager.ViewModels
             showPatientDetailCommand = new RelayCommandAwait(ShowPatientDetailAsync);
             showPatientTreatmentDetailCommand = new RelayCommandAwait(ShowPatientTreatmentDetailAsync);
             showPatientMedicineDetailCommand = new RelayCommandAwait(ShowPatientMedicineDetailAsync);
-	    showTreatmentMedicineDetailCommand = new RelayCommandAwait(ShowTreatmentMedicineDetailAsync);					
+	        showTreatmentMedicineDetailCommand = new RelayCommandAwait(ShowTreatmentMedicineDetailAsync);					
             showEditPatientWindowCommand = new RelayCommandParamAwait(ShowEditPatientAsync);
             deleteSelectedPatientCommand = new RelayCommandParamAwait(DeletePatientAsync);
             showEditTreatmentWindowCommand = new RelayCommandParamAwait(ShowEditTreatmentAsync);
             deleteSelectedTreatmentCommand = new RelayCommandParamAwait(DeleteTreatmentAsync);
             showEditMedicineWindowCommand = new RelayCommandParamAwait(ShowEditMedicineAsync);
             deleteSelectedMedicineCommand = new RelayCommandParamAwait(DeleteMedicineAsync);
+            importPatientsCommand = new RelayCommand(ImportPatients);
         }
         public void InitialiseCurrentTreatmentInfoControl()
         {
@@ -546,7 +555,7 @@ namespace PatientsManager.ViewModels
             InitialiseSelectedPatientMedicines();
             InitialiseSelectedTreatmentMedicines();
         }
-	public async Task ShowTreatmentMedicineDetailAsync()
+	    public async Task ShowTreatmentMedicineDetailAsync()
         {
             inPatientDetails = false;
             var patientMedicineWindow = new PatientMedicineWindow();
@@ -555,6 +564,119 @@ namespace PatientsManager.ViewModels
             await Task.Delay(TimeSpan.FromSeconds(.5));
 
             patientMedicineWindow.ShowDialog();
+        }
+
+        public void SavePatientsToCSV(string fileName, List<Patient> patients)
+        {
+            var titles = "FirstName, LastName, DateOfBirth, MaritalStatus, PhoneNumber, EmailAddress, PhysicalAddress";
+            FileStream fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+            using (var streamWriter = new StreamWriter(fileStream))
+            {
+                streamWriter.WriteLine(titles);
+
+                foreach (var patient in patients)
+                {
+                    streamWriter.WriteLine($"{patient.FirstName}, {patient.LastName}, " +
+                        $"{((DateTime)patient.DateOfBirth).ToShortDateString()}, {patient.MaritalStatus}, {patient.PhoneNumber}, " +
+                        $"{patient.EmailAddress}, {patient.PhysicalAddress}");
+                }
+            }
+        }
+        public void ExportPatients(List<Patient> patients)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Filter = "Comma Separated Files(*.csv)|*.csv"
+            };
+
+            var dialogResult = saveFileDialog.ShowDialog();
+            if (dialogResult == true)
+            {
+                SavePatientsToCSV(saveFileDialog.FileName, patients);
+                MessageBox.Show($"{saveFileDialog.FileName} created");
+            }
+        }
+        public void ImportPatients()
+        {
+            string fileName = "";
+
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Filter = "Comma Separated File(*.csv)|*.csv"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                fileName = openFileDialog.FileName;
+
+                var patients = GetPatientsFromCSV(fileName);
+                SaveImportedPatients(patients);
+
+                MessageBox.Show($"imported {patients.Count} patient(s)");
+                PopulatePatients();
+            }
+
+        }
+        public List<Patient> GetPatientsFromCSV(string fileName)
+        {
+            List<Patient> patients = new List<Patient>();
+
+            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream))
+            {
+                var currentLine = streamReader.ReadLine();
+                while (currentLine != null)
+                {
+                    currentLine = streamReader.ReadLine();
+
+                    if (currentLine != null)
+                    {
+                        var patient = StringLineToPatient(currentLine);
+                        patients.Add(patient);
+                    }
+                }
+            }
+
+            return patients;
+        }
+        public Patient StringLineToPatient(string line)
+        {
+            char[] separators = new[] { ',' };
+            var subStrings = line.Split(separators);
+            
+            Patient patient = new Patient()
+            {
+                FirstName = subStrings[0],
+                LastName = subStrings[1],
+                DateOfBirth = DateTime.Parse(subStrings[2]),
+                MaritalStatus = subStrings[3],
+                PhoneNumber = subStrings[4],
+                EmailAddress = subStrings[5],
+                PhysicalAddress = subStrings[6].Trim()
+            };
+
+            return patient;
+        }
+        public void SaveImportedPatients(List<Patient> patients)
+        {
+            using (var context = new HospitalDBEntities())
+            {
+                foreach (var patient in patients)
+                {
+                    context.Patients.Add(new Patient()
+                    {
+                        FirstName = patient.FirstName,
+                        LastName = patient.LastName,
+                        MaritalStatus = patient.MaritalStatus,
+                        EmailAddress = patient.EmailAddress,
+                        DateOfBirth = patient.DateOfBirth,
+                        PhoneNumber = patient.PhoneNumber,
+                        PhysicalAddress = patient.PhysicalAddress
+                    });
+                }
+
+                context.SaveChanges();
+            }
         }
         #endregion
     }

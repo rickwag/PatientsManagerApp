@@ -17,7 +17,7 @@ namespace PatientsManager.Views
 
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            (DataContext as PatientsViewModel).ShowPatientTreatmentDetailCommand.Execute(null);
+            (DataContext as PatientsViewModel).ShowTreatmentMedicineDetailCommand.Execute(null);
         }
     }
 }

@@ -21,9 +21,9 @@
     <Property Name="LastName" Type="varchar" MaxLength="20" />
     <Property Name="DateOfBirth" Type="date" />
     <Property Name="MaritalStatus" Type="varchar" MaxLength="10" />
-    <Property Name="PhoneNumber" Type="nchar" MaxLength="20" />
-    <Property Name="EmailAddress" Type="nchar" MaxLength="30" />
-    <Property Name="PhysicalAddress" Type="nchar" MaxLength="30" />
+    <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="EmailAddress" Type="nvarchar" MaxLength="50" />
+    <Property Name="PhysicalAddress" Type="nchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="Treatment">
     <Key>
