@@ -10,6 +10,9 @@ using PatientsManager.Models;
 using PatientsManager.Commands;
 using PatientsManager.Views;
 using Microsoft.Win32;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Graphics;
+using System.Drawing;
 
 namespace PatientsManager.ViewModels
 {
@@ -646,12 +649,12 @@ namespace PatientsManager.ViewModels
             
             Patient patient = new Patient()
             {
-                FirstName = subStrings[0],
-                LastName = subStrings[1],
+                FirstName = subStrings[0].Trim(),
+                LastName = subStrings[1].Trim(),
                 DateOfBirth = DateTime.Parse(subStrings[2]),
-                MaritalStatus = subStrings[3],
-                PhoneNumber = subStrings[4],
-                EmailAddress = subStrings[5],
+                MaritalStatus = subStrings[3].Trim(),
+                PhoneNumber = subStrings[4].Trim(),
+                EmailAddress = subStrings[5].Trim(),
                 PhysicalAddress = subStrings[6].Trim()
             };
 
@@ -677,6 +680,127 @@ namespace PatientsManager.ViewModels
 
                 context.SaveChanges();
             }
+        }
+
+        public void GenerateReports(List<Patient> patients)
+        {
+            using (var document = new PdfDocument())
+            {
+                var fileName = GetReportSavingFile();
+
+                PdfFont mainHeadingFont = new PdfStandardFont(PdfFontFamily.Helvetica, 18, PdfFontStyle.Bold);
+                PdfFont alternateHeadingFont = new PdfStandardFont(PdfFontFamily.Helvetica, 14, PdfFontStyle.Bold);
+                PdfFont smallHeadingFont = new PdfStandardFont(PdfFontFamily.Helvetica, 14, PdfFontStyle.Italic);
+                PdfFont normalFont = new PdfStandardFont(PdfFontFamily.Helvetica, 12, PdfFontStyle.Regular);
+
+                float leftPosX = 50f;
+                float rightPosX = 400f;
+                float startingPosY = 50f;
+                float posYIncrement = 30f;
+
+                var defaultBrush = PdfBrushes.Black;
+
+                foreach (var patient in patients)
+                {
+                    float currentPosY = 0f;
+
+                    PdfPage page = document.Pages.Add();
+                    PdfGraphics graphics = page.Graphics;
+
+                    graphics.DrawString($"Patient {patient.FirstName} {patient.LastName} Report", mainHeadingFont, defaultBrush, new PointF(graphics.ClientSize.Width / 2 - 100, currentPosY));
+
+                    currentPosY += startingPosY;
+
+                    //patient personal details
+                    graphics.DrawString("First Name", normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                    graphics.DrawString(patient.FirstName, normalFont, defaultBrush, new PointF(rightPosX, currentPosY));
+
+                    currentPosY += posYIncrement;
+
+                    graphics.DrawString("Last Name", normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                    graphics.DrawString(patient.LastName, normalFont, defaultBrush, new PointF(rightPosX, currentPosY));
+
+                    currentPosY += posYIncrement;
+
+                    graphics.DrawString("Date of Birth", normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                    graphics.DrawString(((DateTime)patient.DateOfBirth).ToShortDateString(), normalFont, defaultBrush, new PointF(rightPosX, currentPosY));
+
+                    currentPosY += posYIncrement;
+
+                    graphics.DrawString("Marital Status", normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                    graphics.DrawString(patient.MaritalStatus, normalFont, defaultBrush, new PointF(rightPosX, currentPosY));
+
+                    currentPosY += posYIncrement;
+
+                    graphics.DrawString("Phone Number", normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                    graphics.DrawString(patient.PhoneNumber, normalFont, defaultBrush, new PointF(rightPosX, currentPosY));
+
+                    currentPosY += posYIncrement;
+
+                    graphics.DrawString("Email Address", normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                    graphics.DrawString(patient.EmailAddress, normalFont, defaultBrush, new PointF(rightPosX, currentPosY));
+
+                    currentPosY += posYIncrement;
+
+                    graphics.DrawString("Physical Address", normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                    graphics.DrawString(patient.PhysicalAddress, normalFont, defaultBrush, new PointF(rightPosX, currentPosY));
+
+                    currentPosY += posYIncrement + 10;
+
+                    //patient treatment details
+                    graphics.DrawString("Treatment Details", mainHeadingFont, defaultBrush, new PointF(graphics.ClientSize.Width / 2 - 100, currentPosY));
+
+                    Dictionary<Treatment, List<Medicine>> treatmentMeds = new Dictionary<Treatment, List<Medicine>>();
+
+                    using (var context = new HospitalDBEntities())
+                    {
+                        foreach (var treatment in context.Patients.First(p => p.PatientID == patient.PatientID).Treatments)
+                        {
+                            treatmentMeds.Add(treatment, treatment.Medicines.ToList());
+                        }
+                    }
+
+                    currentPosY += posYIncrement;
+
+                    foreach (var treatment in treatmentMeds.Keys)
+                    {
+                        graphics.DrawString($"diagnosis {treatment.Diagnosis}", alternateHeadingFont, defaultBrush, new PointF(leftPosX, currentPosY));
+
+                        currentPosY += posYIncrement;
+
+                        graphics.DrawString("symptoms", smallHeadingFont, defaultBrush, new PointF(leftPosX, currentPosY));
+
+                        currentPosY += posYIncrement;
+
+                        graphics.DrawString(treatment.Symptoms, normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+
+                        currentPosY += posYIncrement;
+
+                        graphics.DrawString("medicines", smallHeadingFont, defaultBrush, new PointF(leftPosX, currentPosY));
+
+                        currentPosY += posYIncrement;
+
+                        foreach (var medicine in treatmentMeds[treatment])
+                        {
+                            graphics.DrawString(medicine.MedicineName, normalFont, defaultBrush, new PointF(leftPosX, currentPosY));
+                            currentPosY += posYIncrement;
+                        }
+                    }
+                }
+
+                if (fileName != "")
+                    document.Save(fileName);
+            }
+        }
+        public string GetReportSavingFile()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PDF files(*.pdf)|*.pdf";
+
+            if (saveFileDialog.ShowDialog() == true)
+                return saveFileDialog.FileName;
+            else
+                return "";
         }
         #endregion
     }

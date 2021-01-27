@@ -134,3 +134,8 @@ C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Micros
 C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\System.Windows.Interactivity.dll
 C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Microsoft.Expression.Interactions.xml
 C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\System.Windows.Interactivity.xml
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Syncfusion.Compression.Base.dll
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Syncfusion.Licensing.dll
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Syncfusion.Pdf.Base.dll
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Syncfusion.Compression.Base.xml
+C:\Users\pit\source\repos\GitHub\PatientManager\PatientsManager\bin\Debug\Syncfusion.Pdf.Base.xml

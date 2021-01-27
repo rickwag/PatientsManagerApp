@@ -33,5 +33,17 @@ namespace PatientsManager.Views
 
             (DataContext as PatientsViewModel).ExportPatients(patients);
         }
+
+        private void OnGenerateReportsClicked(object sender, RoutedEventArgs e)
+        {
+            var patients = new List<Patient>();
+
+            foreach (var item in listBox.SelectedItems)
+            {
+                patients.Add(item as Patient);
+            }
+
+            (DataContext as PatientsViewModel).GenerateReports(patients);
+        }
     }
 }

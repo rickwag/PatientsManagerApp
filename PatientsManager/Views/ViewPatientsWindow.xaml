@@ -65,17 +65,21 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
                     <materialDesign:PackIcon Kind="Close"/>
                 </Button>
-            </Grid>
 
-            <Menu DockPanel.Dock="Top"
-                  Background="Transparent"
-                  Margin="20 20"
-                  Foreground="#FF673AB7">
-                <MenuItem Header="Export"
+                <Menu HorizontalAlignment="Left"
+                      Margin="20 20"
+                      Foreground="#FF673AB7">
+
+                    <MenuItem Header="File">
+                        <MenuItem Header="Export"
                           Click="OnExportClicked"/>
-                <MenuItem Header="Import"
+                        <MenuItem Header="Import"
                           Command="{Binding Path=ImportPatientsCommand}"/>
-            </Menu>
+                        <MenuItem Header="Generate report(s)"
+                                  Click="OnGenerateReportsClicked"/>
+                    </MenuItem>
+                </Menu>
+            </Grid>
             
             <Grid>
                 <Grid.RowDefinitions>
